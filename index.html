@@ -10,17 +10,56 @@
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8">Web Time Machine</h1>
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold">Web Time Machine</h1>
+            <div class="flex space-x-4">
+                <button onclick="collector.triggerSampleError()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">
+                    Trigger Error
+                </button>
+                <button onclick="collector.simulateNetworkRequest()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                    Simulate API Call
+                </button>
+                <button onclick="collector.takeScreenshot()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                    Take Screenshot
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="bg-white rounded-lg shadow-lg p-4 mb-8">
+            <div class="flex space-x-6">
+                <div class="flex items-center">
+                    <div id="serverStatus" class="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
+                    <span>Server Status</span>
+                </div>
+                <div class="flex items-center">
+                    <div id="eventsStatus" class="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
+                    <span>Events Tracking</span>
+                </div>
+                <div class="flex items-center">
+                    <div id="screenshotStatus" class="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
+                    <span>Screenshots</span>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <div id="timeline" class="h-96"></div>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Console Logs</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">Console Logs</h2>
+                    <span id="logCount" class="bg-blue-100 text-blue-800 px-2 py-1 rounded">0 logs</span>
+                </div>
                 <div id="console-logs" class="h-64 overflow-y-auto font-mono text-sm"></div>
             </div>
             <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-bold mb-4">Screenshots</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">Screenshots</h2>
+                    <span id="screenshotCount" class="bg-green-100 text-green-800 px-2 py-1 rounded">0 screenshots</span>
+                </div>
                 <div id="screenshots" class="h-64 overflow-y-auto"></div>
             </div>
         </div>
