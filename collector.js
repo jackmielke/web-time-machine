@@ -2,8 +2,11 @@ class WebTimeCollector {
     constructor() {
         this.timeline = null;
         this.items = new vis.DataSet([]);
+        this.logCount = 0;
+        this.screenshotCount = 0;
         this.initializeTimeline();
-        this.setupDemoData(); // Added demo data
+        this.setupDemoData();
+        this.updateStatusIndicators();
     }
 
     initializeTimeline() {
@@ -19,86 +22,107 @@ class WebTimeCollector {
         this.timeline = new vis.Timeline(container, this.items, options);
     }
 
+    updateStatusIndicators() {
+        // Simulate server connection
+        const serverStatus = document.getElementById('serverStatus');
+        serverStatus.className = 'w-3 h-3 rounded-full bg-green-500 mr-2';
+        
+        // Simulate events tracking
+        const eventsStatus = document.getElementById('eventsStatus');
+        eventsStatus.className = 'w-3 h-3 rounded-full bg-green-500 mr-2';
+        
+        // Simulate screenshot capability
+        const screenshotStatus = document.getElementById('screenshotStatus');
+        screenshotStatus.className = 'w-3 h-3 rounded-full bg-green-500 mr-2';
+    }
+
     setupDemoData() {
-        // Add some sample console logs
-        this.addTimelineItem({
-            content: '🟦 Console: User clicked login button',
-            type: 'log'
-        });
-
-        // Add sample network request
-        this.addTimelineItem({
-            content: '🌐 Network: GET /api/user/profile - 200 OK',
-            type: 'network'
-        });
-
-        // Add sample error
-        setTimeout(() => {
-            this.addTimelineItem({
-                content: '❌ Error: Failed to load user preferences',
-                type: 'error'
-            });
-        }, 2000);
-
-        // Add sample screenshot event
-        setTimeout(() => {
-            this.addTimelineItem({
-                content: '📸 Screenshot: Homepage loaded',
-                type: 'screenshot'
-            });
-            
-            // Add a sample screenshot
-            const screenshotsDiv = document.getElementById('screenshots');
-            const img = document.createElement('img');
-            img.src = 'https://via.placeholder.com/300x200?text=Sample+Screenshot';
-            img.className = 'w-full mb-4 rounded shadow';
-            screenshotsDiv.appendChild(img);
-        }, 3000);
-
-        // Add sample console logs
-        const consoleLogsDiv = document.getElementById('console-logs');
-        const logs = [
-            '✨ App initialized',
-            '📡 WebSocket connected',
-            '⚠️ Cache miss for user preferences',
-            '🔄 Retrying API call...',
-            '✅ Data synchronized'
-        ];
-
-        logs.forEach((log, index) => {
-            setTimeout(() => {
-                const logEntry = document.createElement('div');
-                logEntry.className = 'py-1 border-b border-gray-200';
-                logEntry.textContent = log;
-                consoleLogsDiv.appendChild(logEntry);
-
-                this.addTimelineItem({
-                    content: `🟦 Console: ${log}`,
-                    type: 'log'
-                });
-            }, index * 1500);
-        });
-
-        // Simulate real-time updates
+        // Add initial events
+        this.addLog('✨ Application initialized');
+        this.addLog('📡 Local server connected');
+        this.simulateNetworkRequest();
+        
+        // Setup periodic events
         setInterval(() => {
             const events = [
-                '🔍 User search performed',
-                '💾 Data saved to cache',
-                '📊 Analytics event tracked',
-                '🔐 Security check passed'
+                '🔍 User interaction tracked',
+                '💾 Cache updated',
+                '📊 Analytics event recorded',
+                '🔐 Security check completed'
             ];
             
             const randomEvent = events[Math.floor(Math.random() * events.length)];
-            this.addTimelineItem({
-                content: `🟦 Console: ${randomEvent}`,
-                type: 'log'
-            });
-
-            const logEntry = document.createElement('div');
-            logEntry.className = 'py-1 border-b border-gray-200';
-            logEntry.textContent = randomEvent;
-            consoleLogsDiv.appendChild(logEntry);
+            this.addLog(randomEvent);
         }, 5000);
+    }
+
+    addLog(message) {
+        // Update console logs
+        const consoleLogsDiv = document.getElementById('console-logs');
+        const logEntry = document.createElement('div');
+        logEntry.className = 'py-1 border-b border-gray-200';
+        logEntry.textContent = message;
+        consoleLogsDiv.appendChild(logEntry);
+        consoleLogsDiv.scrollTop = consoleLogsDiv.scrollHeight;
+
+        // Update timeline
+        this.addTimelineItem({
+            content: `🟦 ${message}`,
+            type: 'log'
+        });
+
+        // Update counter
+        this.logCount++;
+        document.getElementById('logCount').textContent = `${this.logCount} logs`;
+    }
+
+    triggerSampleError() {
+        const error = '❌ Simulated error occurred: Connection timeout';
+        this.addTimelineItem({
+            content: error,
+            type: 'error'
+        });
+        this.addLog(error);
+    }
+
+    simulateNetworkRequest() {
+        const startTime = new Date();
+        const requestId = Math.random().toString(36).substring(7);
+        
+        this.addTimelineItem({
+            content: `🌐 Starting API request (${requestId})`,
+            type: 'network'
+        });
+        
+        setTimeout(() => {
+            const duration = new Date() - startTime;
+            this.addTimelineItem({
+                content: `✅ API request completed in ${duration}ms (${requestId})`,
+                type: 'network'
+            });
+            this.addLog(`API request ${requestId} completed successfully`);
+        }, 1500);
+    }
+
+    takeScreenshot() {
+        const timestamp = new Date().toLocaleTimeString();
+        
+        // Add screenshot to the timeline
+        this.addTimelineItem({
+            content: `📸 Screenshot captured at ${timestamp}`,
+            type: 'screenshot'
+        });
+
+        // Create a sample screenshot
+        const screenshotsDiv = document.getElementById('screenshots');
+        const img = document.createElement('img');
+        img.src = `https://picsum.photos/300/200?random=${Date.now()}`;
+        img.className = 'w-full mb-4 rounded shadow';
+        screenshotsDiv.appendChild(img);
+
+        // Update counter
+        this.screenshotCount++;
+        document.getElementById('screenshotCount').textContent = `${this.screenshotCount} screenshots`;
     }
 
     addTimelineItem(data) {
